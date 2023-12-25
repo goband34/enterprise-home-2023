@@ -1,0 +1,36 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Book a Flight";
+}
+
+<h1 class="display-4">Book a flight</h1>
+
+<form>
+    <div class="mb-3">
+        <label class="form-label" for="flight_id">Flight</label>
+        <select class="form-control" id="flight_id">
+            <option value="">Choose a flight</option>
+            <option value="1">Flight 1</option>
+            <option value="2">Flight 2</option>
+            <option value="3">Flight 3</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="seat_row">Row</label>
+        <input class="form-control" type="text" id="seat_row">
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="seat_col">Column</label>
+        <input class="form-control" type="text" id="seat_col">
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="passport_no">Passport No</label>
+        <input class="form-control" type="text" id="passport_no">
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        document.getElementById('flight_id').value = '@(ViewData["FlightId"] ?? "")'
+    </script>
+}

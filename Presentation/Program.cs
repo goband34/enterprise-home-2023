@@ -23,5 +23,11 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapControllerRoute(
+    name: "flights",
+    pattern: "Flight/{action=Index}");
+app.MapControllerRoute(
+    name: "flight.book",
+    pattern: "Flight/Book/{id?}");
 
 app.Run();

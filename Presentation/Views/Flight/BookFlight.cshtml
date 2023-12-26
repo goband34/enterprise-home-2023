@@ -1,3 +1,5 @@
+@model Domain.ViewModels.BookingVM
+
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Book a Flight";
@@ -5,32 +7,40 @@
 
 <h1 class="display-4">Book a flight</h1>
 
-<form>
+<form asp-action="BookFlight" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="mb-3">
-        <label class="form-label" for="flight_id">Flight</label>
-        <select class="form-control" id="flight_id">
+        <label class="form-label" asp-for="FlightID">Flight</label>
+        <select class="form-control" asp-for="FlightID">
             <option value="">Choose a flight</option>
-            <option value="1">Flight 1</option>
-            <option value="2">Flight 2</option>
-            <option value="3">Flight 3</option>
+            @foreach (var flight in (IQueryable<Domain.ViewModels.FlightVM>)ViewData["flights"])
+            {
+                <option value="@(flight.ID)">@flight.FlightRoute</option>
+            }
         </select>
+        <span asp-validation-for="FlightID" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label class="form-label" for="seat_row">Row</label>
-        <input class="form-control" type="text" id="seat_row">
+        <label class="form-label" asp-for="Row">Row</label>
+        <input class="form-control" type="text" asp-for="Row">
+        <span asp-validation-for="Row" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label class="form-label" for="seat_col">Column</label>
-        <input class="form-control" type="text" id="seat_col">
+        <label class="form-label" asp-for="Column">Column</label>
+        <input class="form-control" type="text" asp-for="Column">
+        <span asp-validation-for="Column" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label class="form-label" for="passport_no">Passport No</label>
-        <input class="form-control" type="text" id="passport_no">
+        <label class="form-label" asp-for="PassportNo">Passport No</label>
+        <input class="form-control" type="text" asp-for="PassportNo">
+        <span asp-validation-for="PassportNo" class="text-danger"></span>
     </div>
+
+    <button type="submit" class="btn btn-primary">Book</button>
 </form>
 
 @section Scripts {
     <script>
-        document.getElementById('flight_id').value = '@(ViewData["FlightId"] ?? "")'
+        document.getElementById('FlightID').value = '@(ViewData["FlightId"] ?? "")'
     </script>
 }

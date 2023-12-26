@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Domain;
+namespace Domain.Models;
 
 public class Ticket
 {
@@ -9,8 +9,8 @@ public class Ticket
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int ID { get; set; } 
 
-    public int Rows { get; set; }
-    public int Columns { get; set; }
+    public int Row { get; set; }
+    public int Column { get; set; }
 
     [ForeignKey("Flight")]
     public int FlightFK { get; set; }

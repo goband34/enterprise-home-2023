@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers;
 
-class TicketController : Controller
+public class TicketController : Controller
 {
     public IActionResult Index()
     {

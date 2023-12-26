@@ -1,6 +1,7 @@
-using Domain;
+using Domain.Models;
+using Data.Contexts;
 
-namespace Data;
+namespace Data.Repositories;
 
 public class FlightDbRepository
 {

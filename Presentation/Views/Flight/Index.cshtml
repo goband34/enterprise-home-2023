@@ -10,33 +10,20 @@
             <th scope="col">Departure Date</th>
             <th scope="col">Arrival Date</th>
             <th scope="col">Price</th>
+            <th scope="col"></th>
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>Valletta - Milan</td>
-            <td>25/12/2023</td>
-            <td>26/12/2023</td>
-            <td>50&euro;</td>
-        </tr>
-        <tr>
-            <td>Valletta - Milan</td>
-            <td>25/12/2023</td>
-            <td>26/12/2023</td>
-            <td>50&euro;</td>
-        </tr>
-        <tr>
-            <td>Valletta - Milan</td>
-            <td>25/12/2023</td>
-            <td>26/12/2023</td>
-            <td>50&euro;</td>
-        </tr>
-        <tr>
-            <td>Valletta - Milan</td>
-            <td>25/12/2023</td>
-            <td>26/12/2023</td>
-            <td>50&euro;</td>
-        </tr>
+        @foreach (var flight in (IQueryable<Domain.ViewModels.FlightVM>)ViewData["flights"])
+        {
+            <tr>
+                <td>@flight.FlightRoute</td>
+                <td>@flight.DepartureDate</td>
+                <td>@flight.ArrivalDate</td>
+                <td>@(flight.Price)&euro;</td>
+                <td><a href="@(Url.RouteUrl("flights.book", new { id = flight.ID }))">Book</a></td>
+            </tr>
+        }
     </tbody>
 </table>
 

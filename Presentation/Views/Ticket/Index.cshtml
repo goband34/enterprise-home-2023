@@ -1,6 +1,9 @@
 @{
+    Layout = "_Layout";
     ViewData["Title"] = "Tickets";
 }
+
+<h1 class="display-4">Tickets</h1>
 
 <div class="tickets-container">
     <div class="card">
@@ -42,7 +45,11 @@
 </div>
 
 @section Styles {
-<style>
-.tickets-container {
-    
+    <style>
+        .tickets-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+    </style>
 }

@@ -1,6 +1,7 @@
-﻿namespace Data;
+﻿using Domain.Models;
+using Data.Contexts;
 
-using Domain;
+namespace Data.Repositories;
 
 public class TicketDBRepository
 {
@@ -11,7 +12,7 @@ public class TicketDBRepository
 	this._context = _context;
     }
     
-    public void Book(Flight flight)
+    public void Book(Ticket ticket)
     {
     }
 

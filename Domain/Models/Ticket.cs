@@ -14,9 +14,9 @@ public class Ticket
 
     [ForeignKey("Flight")]
     public int FlightFK { get; set; }
-    public virtual Flight Flight { get; set; } = null!;
+    public virtual Flight Flight { get; set; }
 
-    public string Passport { get; set; } = null!;
+    public string Passport { get; set; }
 
     public double PricePaid { get; set; }
     

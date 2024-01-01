@@ -49,6 +49,11 @@ public class AirlineDbContext : DbContext
         );
     }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseLazyLoadingProxies();
+    }
+
     public DbSet<Ticket>? Tickets { get; set; }
     public DbSet<Flight>? Flights { get; set; }
 }

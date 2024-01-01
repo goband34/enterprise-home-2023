@@ -14,6 +14,7 @@ public class TicketDBRepository
     
     public void Book(Ticket ticket)
     {
+        // TODO: Check that row and column are unique for the flight
         this._context.Tickets.Add(ticket);
         this._context.SaveChanges();
     }

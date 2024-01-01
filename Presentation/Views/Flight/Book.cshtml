@@ -1,0 +1,30 @@
+@model Presentation.ViewModels.BookingVM
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Book a Flight";
+}
+
+<h1 class="display-4">Book a ticket for @ViewData["FlightTitle"]</h1>
+
+<form asp-action="Book" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="FlightID" value="@ViewData["FlightID"]">
+    <div class="mb-3">
+        <label class="form-label" asp-for="Row">Row (1 to @ViewData["FlightRows"])</label>
+        <input class="form-control" type="text" asp-for="Row">
+        <span asp-validation-for="Row" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" asp-for="Column">Column (1 of @ViewData["FlightColumns"])</label>
+        <input class="form-control" type="text" asp-for="Column">
+        <span asp-validation-for="Column" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" asp-for="PassportNo">Passport No</label>
+        <input class="form-control" type="text" asp-for="PassportNo">
+        <span asp-validation-for="PassportNo" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Book</button>
+</form>

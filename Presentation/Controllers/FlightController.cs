@@ -1,18 +1,21 @@
 using Microsoft.AspNetCore.Mvc;
 using Data.Repositories;
-using Domain.ViewModels;
+using Presentation.ViewModels;
 
 namespace Presentation.Controllers;
 
 public class FlightController : Controller
 {
     private FlightDbRepository _flightRepo;
+    private TicketDBRepository _ticketRepo;
 
-    public FlightController(FlightDbRepository flightRepository)
+    public FlightController(FlightDbRepository flightRepository, TicketDBRepository ticketRepository)
     {
         this._flightRepo = flightRepository;
+        this._ticketRepo = ticketRepository;
     }
 
+    [HttpGet]
     public IActionResult Index()
     {
         var flights = this._flightRepo.GetFlights().Select(f => new FlightVM(f));
@@ -20,24 +23,62 @@ public class FlightController : Controller
         return View();
     }
 
+    [HttpGet]
     public IActionResult Book(int? id)
     {
-        var flights = this._flightRepo.GetFlights().Select(f => new FlightVM(f));
-        ViewData["Flights"] = flights;
-        ViewData["FlightId"] = id;
-        return View("BookFlight");
+        if (id.HasValue)
+        {
+            var flight = this._flightRepo.GetFlight(id.Value);
+            if (flight != null)
+            {
+                var flightVM = new FlightVM(flight);
+                ViewData["FlightID"] = flightVM.ID;
+                ViewData["FlightTitle"] = flightVM.FlightRoute;
+                ViewData["FlightRows"] = flightVM.Rows;
+                ViewData["FlightColumns"] = flightVM.Columns;
+                return View();
+            }
+            // TODO: Better error handling
+            return View("Index");
+        }
+        // TODO: Better error handling
+        return View("Index");
     }
 
     [HttpPost]
-    public IActionResult BookFlight(BookingVM booking)
+    public IActionResult Book(BookingVM booking)
     {
+        var flightVM = new FlightVM(this._flightRepo.GetFlight(booking.FlightID.Value));
         if (!ModelState.IsValid)
         {
-            return this.Book(booking.FlightID);
+            if (booking.FlightID.HasValue)
+            {
+                ViewData["FlightID"] = flightVM.ID;
+                ViewData["FlightTitle"] = flightVM.FlightRoute;
+                ViewData["FlightRows"] = flightVM.Rows;
+                ViewData["FlightColumns"] = flightVM.Columns;
+                return View();
+            }
+            else
+            {
+                // TODO: Better error handling
+                return RedirectToAction("Index");
+            }
         }
         else
         {
-            return RedirectToAction("Index");
+            var ticket = booking.ToTicket();
+            if (ticket != null)
+            {
+                this._ticketRepo.Book(ticket);
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                // TODO: Error handling
+                return RedirectToAction("Index");
+            }
         }
     }
 }

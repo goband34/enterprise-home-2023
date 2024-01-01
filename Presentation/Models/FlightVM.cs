@@ -1,6 +1,6 @@
 using Domain.Models;
 
-namespace Domain.ViewModels;
+namespace Presentation.ViewModels;
 
 public class FlightVM
 {
@@ -25,6 +25,18 @@ public class FlightVM
     public double Price
     {
         get => this._flight.WholesalePrice + (this._flight.WholesalePrice * this._flight.CommissionRate);
+    }
+    public bool IsFull
+    {
+        get => this._flight.Tickets.Count >= (this._flight.Rows * this._flight.Columns);
+    }
+    public int Rows
+    {
+        get => this._flight.Rows;
+    }
+    public int Columns
+    {
+        get => this._flight.Columns;
     }
 
     public FlightVM(Flight flight)

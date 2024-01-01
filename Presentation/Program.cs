@@ -9,15 +9,18 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
+        builder.Logging.ClearProviders();
+        builder.Logging.AddConsole();
 
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-        
+
+        builder.Services.AddRazorPages();
         builder.Services.AddDbContext<AirlineDbContext>(options =>
             options.UseSqlite(connectionString));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
         builder.Services.AddScoped<FlightDbRepository>();
+        builder.Services.AddScoped<TicketDBRepository>();
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
@@ -40,18 +43,10 @@ public class Program
         app.UseAuthorization();
 
         app.MapControllerRoute(
-            name: "flights",
-            pattern: "Flight/{action=Index}");
-        app.MapControllerRoute(
-            name: "flights.book",
-            pattern: "Flight/Book/{id?}");
-        app.MapControllerRoute(
-            name: "tickets",
-            pattern: "Ticket/{action=Index}");
-        app.MapControllerRoute(
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
 
+        app.MapRazorPages();
         app.Run();
     }
 }

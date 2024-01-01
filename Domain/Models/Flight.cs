@@ -20,4 +20,6 @@ public class Flight
 
     public double WholesalePrice { get; set; }
     public double CommissionRate { get; set; }
+
+    public ICollection<Ticket> Tickets { get; } = new List<Ticket>();
 }

@@ -14,6 +14,8 @@ public class TicketDBRepository
     
     public void Book(Ticket ticket)
     {
+        this._context.Tickets.Add(ticket);
+        this._context.SaveChanges();
     }
 
     public void Cancel(Ticket ticket)

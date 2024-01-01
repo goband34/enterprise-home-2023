@@ -14,16 +14,24 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var flight in (IQueryable<Domain.ViewModels.FlightVM>)ViewData["flights"])
+        @foreach (var flight in (IQueryable<Presentation.ViewModels.FlightVM>)ViewData["Flights"])
         {
             <tr>
                 <td>@flight.FlightRoute</td>
                 <td>@flight.DepartureDate</td>
                 <td>@flight.ArrivalDate</td>
                 <td>@(flight.Price)&euro;</td>
-                <td><a href="@(Url.RouteUrl("flights.book", new { id = flight.ID }))">Book</a></td>
+                <td>
+                    @if(!flight.IsFull)
+                    {
+                        <a href="@(Url.Action("Book", new { id = flight.ID }))">Book</a>
+                    }
+                    else
+                    {
+                        <span>Full</span>
+                    }
+                </td>
             </tr>
         }
     </tbody>
 </table>
-

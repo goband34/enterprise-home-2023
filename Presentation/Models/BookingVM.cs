@@ -33,6 +33,7 @@ public class BookingVM
                 Column = this.Column.Value,
                 FlightFK = this.FlightID.Value,
                 Passport = this.PassportNo,
+                PricePaid = this.PricePaid,
                 Cancelled = false
             };
         }

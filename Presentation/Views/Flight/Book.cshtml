@@ -28,3 +28,18 @@
 
     <button type="submit" class="btn btn-primary">Book</button>
 </form>
+
+@section Scripts {
+    @if(TempData.Peek("error") != null)
+    {
+        void RenderScript(string errorMessage)
+        {
+            <script>
+                alert(@(Json.Serialize(errorMessage)));
+            </script>
+        }
+
+        RenderScript(@TempData.Peek("error").ToString());
+        TempData.Remove("error");
+    }
+}

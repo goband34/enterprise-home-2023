@@ -18,6 +18,10 @@ public class TicketVM
     {
         get => this._ticket.Flight.DepartureDate.ToString("dd/MM/yyyy");
     }
+    public double PricePaid
+    {
+        get => this._ticket.PricePaid;
+    }
 
     public TicketVM(Ticket ticket)
     {

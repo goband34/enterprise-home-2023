@@ -18,7 +18,11 @@ public class FlightController : Controller
     [HttpGet]
     public IActionResult Index()
     {
-        var flights = this._flightRepo.GetFlights().Select(f => new FlightVM(f));
+        var flights =
+            this._flightRepo
+            .GetFlights()
+            .Where(f => f.DepartureDate >= DateTime.Now)
+            .Select(f => new FlightVM(f));
         ViewData["Flights"] = flights;
         return View();
     }
@@ -48,11 +52,11 @@ public class FlightController : Controller
     [HttpPost]
     public IActionResult Book(BookingVM booking)
     {
-        var flightVM = new FlightVM(this._flightRepo.GetFlight(booking.FlightID.Value));
         if (!ModelState.IsValid)
         {
             if (booking.FlightID.HasValue)
             {
+                var flightVM = new FlightVM(this._flightRepo.GetFlight(booking.FlightID.Value));
                 ViewData["FlightID"] = flightVM.ID;
                 ViewData["FlightTitle"] = flightVM.FlightRoute;
                 ViewData["FlightRows"] = flightVM.Rows;
@@ -65,20 +69,24 @@ public class FlightController : Controller
                 return RedirectToAction("Index");
             }
         }
-        else
-        {
-            var ticket = booking.ToTicket();
-            if (ticket != null)
-            {
-                this._ticketRepo.Book(ticket);
 
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                // TODO: Error handling
-                return RedirectToAction("Index");
-            }
+        var ticket = booking.ToTicket();
+
+        if (ticket == null)
+        {
+            // TODO: Error handling
+            return RedirectToAction("Index");
+        }
+
+        try
+        {
+            this._ticketRepo.Book(ticket);
+            return RedirectToAction("Index");
+        }
+        catch (Exception e)
+        {
+            TempData["error"] = e.Message;
+            return RedirectToAction("Book", new { id = booking.FlightID.Value });
         }
     }
 }

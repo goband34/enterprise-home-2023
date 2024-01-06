@@ -30,6 +30,10 @@ public class FlightVM
     {
         get => this._flight.Tickets.Count >= (this._flight.Rows * this._flight.Columns);
     }
+    public int NumberOfBookings
+    {
+        get => this._flight.Tickets.Count;
+    }
     public int Rows
     {
         get => this._flight.Rows;

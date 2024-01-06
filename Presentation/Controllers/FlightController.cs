@@ -50,7 +50,7 @@ public class FlightController : Controller
     }
 
     [HttpPost]
-    public IActionResult Book(BookingVM booking)
+    public IActionResult Book(BookingVM booking, [FromServices]IWebHostEnvironment host)
     {
         if (!ModelState.IsValid)
         {
@@ -80,6 +80,21 @@ public class FlightController : Controller
 
         try
         {
+            if (booking.PassportImage != null)
+            {
+                string uniqueId = Guid.NewGuid().ToString();
+                string relativePath = "PassportImages/{uniqueId}{Path.GetExtension(booking.PassportImage.FileName)}";
+                string path = $"{host.WebRootPath}/{relativePath}";
+
+                using (FileStream fileStream = new FileStream(path, FileMode.CreateNew))
+                {
+                    booking.PassportImage.CopyTo(fileStream);
+                    fileStream.Flush();
+                }
+
+                booking.SetPassportImagePath(relativePath);
+            }
+
             this._ticketRepo.Book(ticket);
             return RedirectToAction("Index");
         }

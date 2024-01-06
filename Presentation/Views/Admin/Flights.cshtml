@@ -1,0 +1,28 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Flights";
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Route</th>
+            <th scope="col">Departure</th>
+            <th scope="col">Arrival</th>
+            <th scope="col">Number of bookings</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var flight in (IQueryable<Presentation.ViewModels.FlightVM>)ViewData["Flights"])
+        {
+            <tr>
+                <td>@flight.ID</td>
+                <td>@flight.FlightRoute</td>
+                <td>@flight.DepartureDate</td>
+                <td>@flight.ArrivalDate</td>
+                <td>@flight.NumberOfBookings</td>
+            </tr>
+        }
+    </tbody>
+</table>

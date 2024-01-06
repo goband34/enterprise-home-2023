@@ -1,6 +1,5 @@
 ﻿using Domain.Models;
 using Data.Contexts;
-using Data.Repositories; 
 
 namespace Data.Repositories;
 
@@ -36,12 +35,13 @@ public class TicketDBRepository
         this._context.SaveChanges();
     }
 
-    public void Cancel(Ticket ticket)
-    {
-    }
-
     public IQueryable<Ticket> GetTickets()
     {
 	return _context.Tickets;
     }
+
+    public void Cancel(Ticket ticket)
+    {
+    }
+
 }

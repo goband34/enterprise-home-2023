@@ -25,6 +25,11 @@
         <input class="form-control" type="text" asp-for="PassportNo">
         <span asp-validation-for="PassportNo" class="text-danger"></span>
     </div>
+    <div class="mb-3">
+        <label class="form-label" asp-for="PassportImage">Passport Image</label>
+        <input class="form-control" type="file" asp-for="PassportImage">
+        <span asp-validation-for="PassportImage" class="text-danger"></span>
+    </div>
 
     <button type="submit" class="btn btn-primary">Book</button>
 </form>

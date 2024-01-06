@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Data.Contexts;
 using Data.Repositories;
+using Domain.Models;
 
 namespace Presentation;
 
@@ -14,6 +15,9 @@ public class Program
 
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
+        builder.Services
+            .AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+            .AddEntityFrameworkStores<AirlineDbContext>();
         builder.Services.AddRazorPages();
         builder.Services.AddDbContext<AirlineDbContext>(options =>
             options.UseSqlite(connectionString));
@@ -40,6 +44,7 @@ public class Program
 
         app.UseRouting();
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllerRoute(

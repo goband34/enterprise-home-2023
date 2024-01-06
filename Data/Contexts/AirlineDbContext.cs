@@ -1,14 +1,17 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Domain.Models;
 
 namespace Data.Contexts;
 
-public class AirlineDbContext : DbContext
+public class AirlineDbContext : IdentityDbContext<User> 
 {
     public AirlineDbContext(DbContextOptions<AirlineDbContext> options): base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<Flight>().HasData(
             new Flight
             {

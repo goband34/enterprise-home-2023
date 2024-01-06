@@ -16,22 +16,50 @@
     <tbody>
         @foreach (var flight in (IQueryable<Presentation.ViewModels.FlightVM>)ViewData["Flights"])
         {
-            <tr>
+            @if(flight.IsFull)
+            {
+            <tr class="flight-full">
                 <td>@flight.FlightRoute</td>
                 <td>@flight.DepartureDate</td>
                 <td>@flight.ArrivalDate</td>
                 <td>@(flight.Price)&euro;</td>
-                <td>
-                    @if(!flight.IsFull)
-                    {
-                        <a href="@(Url.Action("Book", new { id = flight.ID }))">Book</a>
-                    }
-                    else
-                    {
-                        <span>Full</span>
-                    }
-                </td>
+                <td style="color: red">FULL</td>
             </tr>
+            }
+            else
+            {
+            <tr class="table-row-hover" onclick="openBookingPageForFlight(@flight.ID)">
+                <td>@flight.FlightRoute</td>
+                <td>@flight.DepartureDate</td>
+                <td>@flight.ArrivalDate</td>
+                <td>@(flight.Price)&euro;</td>
+                <td></td>
+            </tr>
+            }
         }
     </tbody>
 </table>
+
+@section Styles {
+<style>
+tr.flight-full {
+    background-color: #fae1e1;
+}
+
+tr.table-row-hover {
+    cursor: pointer;
+}
+
+tr.table-row-hover:hover {
+    background-color: #e3e3e3;
+}
+</style>        
+}
+
+@section Scripts {
+<script>
+        function openBookingPageForFlight(flightId) {
+            window.location.href = "/Flight/Book/" + flightId;
+        }
+</script>
+}

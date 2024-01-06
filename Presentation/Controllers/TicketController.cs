@@ -6,15 +6,15 @@ namespace Presentation.Controllers;
 
 public class TicketController : Controller
 {
-    private TicketDBRepository _ticketRepo;
-    public TicketController(TicketDBRepository ticketRepository)
+    private ITicketRepository _ticketRepo;
+    public TicketController(ITicketRepository ticketRepository)
     {
         this._ticketRepo = ticketRepository;
     }
 
     public IActionResult Index()
     {
-        var tickets = this._ticketRepo.GetTickets().Select(f => new TicketVM(f));
+        var tickets = this._ticketRepo.GetTickets()?.Select(f => new TicketVM(f)) ?? new List<TicketVM>().AsQueryable();
         ViewData["Tickets"] = tickets;
         return View();
     }

@@ -10,8 +10,6 @@ public class AirlineDbContext : IdentityDbContext<User>
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
-
         modelBuilder.Entity<Flight>().HasData(
             new Flight
             {
@@ -48,8 +46,22 @@ public class AirlineDbContext : IdentityDbContext<User>
                 CountryTo = "Russia",
                 WholesalePrice = 450.0,
                 CommissionRate = 1.5 
+            },
+            new Flight
+            {
+                ID = 4,
+                Rows = 1,
+                Columns = 1,
+                DepartureDate = new DateTime(2024, 03, 21),
+                ArrivalDate = new DateTime(2024, 03, 22),
+                CountryFrom = "Moldova",
+                CountryTo = "Germany",
+                WholesalePrice = 300.0,
+                CommissionRate = 0.02
             }
         );
+
+        base.OnModelCreating(modelBuilder);
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

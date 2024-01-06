@@ -24,7 +24,16 @@ public class Program
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
         builder.Services.AddScoped<FlightDbRepository>();
-        builder.Services.AddScoped<TicketDBRepository>();
+
+        // Ensure directory exists
+        System.IO.Directory.CreateDirectory($"{builder.Environment.ContentRootPath}/JsonData");
+        string jsonTicketsPath = $"{builder.Environment.ContentRootPath}/JsonData/tickets.json";
+        // builder.Services
+        // .AddScoped<ITicketRepository, TicketFileRepository>(
+        // options =>
+        // new TicketFileRepository(jsonTicketsPath, options.GetRequiredService<FlightDbRepository>())
+        // );
+        builder.Services.AddScoped<ITicketRepository, TicketDBRepository>();
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();

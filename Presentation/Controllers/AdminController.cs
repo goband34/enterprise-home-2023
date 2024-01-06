@@ -7,10 +7,12 @@ namespace Presentation.Controllers;
 public class AdminController : Controller
 {
     private FlightDbRepository _flightRepo;
+    private TicketDBRepository _ticketRepo;
 
-    public AdminController(FlightDbRepository flightRepo)
+    public AdminController(FlightDbRepository flightRepo, TicketDBRepository ticketRepo)
     {
         this._flightRepo = flightRepo;
+        this._ticketRepo = ticketRepo;
     }
 
     public IActionResult Flights()
@@ -20,10 +22,37 @@ public class AdminController : Controller
         return View();
     }
 
-    public IActionResult Tickets(int flightId)
+    [HttpGet]
+    public IActionResult Tickets(int id)
     {
-        var tickets = this._flightRepo.GetFlight(flightId)?.Tickets.Select(t => new AdminTicketVM(t));
+        var flight = this._flightRepo.GetFlight(id);
+        if (flight == null)
+        {
+            TempData["error"] = $"No flight found with ID {id}";
+            return RedirectToAction("Flights");
+        }
+
+        var tickets = flight.Tickets.Where(t => !t.Cancelled).Select(t => new AdminTicketVM(t));
         ViewData["Tickets"] = tickets;
+        return View();
+    }
+
+    [HttpGet]
+    public IActionResult TicketInfo(int id)
+    {
+        var ticket = this._ticketRepo.GetTicket(id);
+        if (ticket == null)
+        {
+            TempData["error"] = $"No ticket found with ID {id}";
+            return RedirectToAction("Tickets");
+        }
+        if (ticket.Cancelled)
+        {
+            TempData["error"] = $"Ticket with id {id} has been cancelled";
+            return RedirectToAction("Tickets");
+        }
+
+        ViewData["Ticket"] = new AdminTicketVM(ticket);
         return View();
     }
 }

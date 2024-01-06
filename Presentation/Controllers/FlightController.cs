@@ -7,9 +7,9 @@ namespace Presentation.Controllers;
 public class FlightController : Controller
 {
     private FlightDbRepository _flightRepo;
-    private TicketDBRepository _ticketRepo;
+    private ITicketRepository _ticketRepo;
 
-    public FlightController(FlightDbRepository flightRepository, TicketDBRepository ticketRepository)
+    public FlightController(FlightDbRepository flightRepository, ITicketRepository ticketRepository)
     {
         this._flightRepo = flightRepository;
         this._ticketRepo = ticketRepository;
@@ -28,22 +28,17 @@ public class FlightController : Controller
     }
 
     [HttpGet]
-    public IActionResult Book(int? id)
+    public IActionResult Book(int id)
     {
-        if (id.HasValue)
+        var flight = this._flightRepo.GetFlight(id);
+        if (flight != null)
         {
-            var flight = this._flightRepo.GetFlight(id.Value);
-            if (flight != null)
-            {
-                var flightVM = new FlightVM(flight);
-                ViewData["FlightID"] = flightVM.ID;
-                ViewData["FlightTitle"] = flightVM.FlightRoute;
-                ViewData["FlightRows"] = flightVM.Rows;
-                ViewData["FlightColumns"] = flightVM.Columns;
-                return View();
-            }
-            // TODO: Better error handling
-            return View("Index");
+            var flightVM = new FlightVM(flight);
+            ViewData["FlightID"] = flightVM.ID;
+            ViewData["FlightTitle"] = flightVM.FlightRoute;
+            ViewData["FlightRows"] = flightVM.Rows;
+            ViewData["FlightColumns"] = flightVM.Columns;
+            return View();
         }
         // TODO: Better error handling
         return View("Index");
@@ -70,21 +65,26 @@ public class FlightController : Controller
             }
         }
 
-        var ticket = booking.ToTicket();
-
-        if (ticket == null)
-        {
-            // TODO: Error handling
-            return RedirectToAction("Index");
-        }
-
         try
         {
+            var flight = this._flightRepo.GetFlight(booking.FlightID.Value);
+            if (flight == null)
+            {
+                TempData["error"] = $"Trying to book a ticket for flight with id {booking.FlightID.Value} which does not exist";
+                return RedirectToAction("Index");
+            }
+
+            var pricePaid = flight.WholesalePrice + (flight.WholesalePrice * flight.CommissionRate);
+            booking.PricePaid = pricePaid;
+
             if (booking.PassportImage != null)
             {
                 string uniqueId = Guid.NewGuid().ToString();
-                string relativePath = "PassportImages/{uniqueId}{Path.GetExtension(booking.PassportImage.FileName)}";
+                string newFileName = $"{uniqueId}{Path.GetExtension(booking.PassportImage.FileName)}";
+                string relativePath = $"PassportImages/{newFileName}";
                 string path = $"{host.WebRootPath}/{relativePath}";
+                // Ensure directory exists
+                System.IO.Directory.CreateDirectory($"{host.WebRootPath}/PassportImages");
 
                 using (FileStream fileStream = new FileStream(path, FileMode.CreateNew))
                 {
@@ -93,6 +93,14 @@ public class FlightController : Controller
                 }
 
                 booking.SetPassportImagePath(relativePath);
+            }
+
+            var ticket = booking.ToTicket();
+
+            if (ticket == null)
+            {
+                // TODO: Error handling
+                return RedirectToAction("Index");
             }
 
             this._ticketRepo.Book(ticket);

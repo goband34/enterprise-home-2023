@@ -6,7 +6,11 @@ public class AdminTicketVM
 {
     private Ticket _ticket;
 
-    public string Relation
+    public int ID
+    {
+        get => this._ticket.ID;
+    }
+    public string Route 
     {
         get
         {
@@ -14,17 +18,34 @@ public class AdminTicketVM
             return $"{flight.CountryFrom}-{flight.CountryTo}";
         }
     }
-    public string DepartureDate
+    public int Row
     {
-        get => this._ticket.Flight.DepartureDate.ToString("dd/MM/yyyy");
+        get => this._ticket.Row;
     }
-    public string ArrivalDate 
+    public int Column
     {
-        get => this._ticket.Flight.ArrivalDate.ToString("dd/MM/yyyy");
+        get => this._ticket.Column;
+    }
+    public string Dates
+    {
+        get
+        {
+            string departureDate = this._ticket.Flight.DepartureDate.ToString("dd/MM/yyyy");
+            string arrivalDate = this._ticket.Flight.ArrivalDate.ToString("dd/MM/yyyy");
+            return $"{departureDate} - {arrivalDate}";
+        }
     }
     public double PricePaid
     {
         get => this._ticket.PricePaid;
+    }
+    public string PassportNo
+    {
+        get => this._ticket.Passport;
+    }
+    public string PassportImagePath
+    {
+        get => $"/{this._ticket.PassportImagePath}";
     }
 
     public AdminTicketVM(Ticket ticket)

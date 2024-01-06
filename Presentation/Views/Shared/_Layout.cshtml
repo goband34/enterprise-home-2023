@@ -6,7 +6,7 @@
     <title>@ViewData["Title"] - HomeAssignment</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/HomeAssignment.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Presentation.styles.css" asp-append-version="true" />
     @RenderSection("Styles", required: false)
 </head>
 <body>
@@ -21,10 +21,10 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Flight" asp-action="Index">Flights</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Ticket" asp-action="Index">My Tickets</a>
                         </li>
                     </ul>
                 </div>
@@ -45,6 +45,18 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    @if(TempData.Peek("error") != null)
+    {
+        void RenderScript(string errorMessage)
+        {
+            <script>
+                alert(@(Json.Serialize(errorMessage)));
+            </script>
+        }
+
+        RenderScript(@TempData.Peek("error").ToString());
+        TempData.Remove("error");
+    }
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

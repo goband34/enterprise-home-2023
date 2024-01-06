@@ -1,0 +1,42 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Tickets";
+}
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Route</th>
+            <th scope="col">Flight Date</th>
+            <th scope="col">Price Paid</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ticket in (IEnumerable<Presentation.ViewModels.AdminTicketVM>)ViewData["Tickets"])
+        {
+            <tr onclick="openTicketInfoPageForTicket(@ticket.ID)">
+                <td>@ticket.ID</td>
+                <td>@ticket.Route</td>
+                <td>@ticket.Dates</td>
+                <td>@ticket.PricePaid</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Styles {
+<style>
+tr {
+    cursor: pointer;
+}
+</style>        
+}
+
+@section Scripts {
+<script>
+        function openTicketInfoPageForTicket(ticketId) {
+            window.location.href = "/Admin/TicketInfo/" + ticketId;
+        }
+</script>
+}

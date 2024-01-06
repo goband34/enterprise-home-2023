@@ -3,7 +3,7 @@ using Data.Contexts;
 
 namespace Data.Repositories;
 
-public class TicketDBRepository
+public class TicketDBRepository : ITicketRepository
 {
     private AirlineDbContext _context;
     private FlightDbRepository _flightRepo;
@@ -13,7 +13,17 @@ public class TicketDBRepository
 	this._context = context;
         this._flightRepo = flightRepo;
     }
-    
+
+    public IQueryable<Ticket>? GetTickets()
+    {
+	return _context.Tickets;
+    }
+
+    public Ticket? GetTicket(int id)
+    {
+        return _context.Tickets?.Find(id);
+    }
+
     public void Book(Ticket ticket)
     {
         if (this._flightRepo.GetFlight(ticket.FlightFK)?.DepartureDate < DateTime.Now)
@@ -23,21 +33,16 @@ public class TicketDBRepository
 
         var existingTicket =
             this._context.Tickets
-            ?.Where(t => t.FlightFK == ticket.FlightFK && t.Row == ticket.Row && t.Column == ticket.Column)
+            ?.Where(t => t.FlightFK == ticket.FlightFK && t.Row == ticket.Row && t.Column == ticket.Column && !ticket.Cancelled)
             .FirstOrDefault();
 
-        if (existingTicket != null && existingTicket.Cancelled == false)
+        if (existingTicket != null)
         {
             throw new Exception("Trying to book a ticket that's occupied");
         }
 
         this._context.Tickets?.Add(ticket);
         this._context.SaveChanges();
-    }
-
-    public IQueryable<Ticket> GetTickets()
-    {
-	return _context.Tickets;
     }
 
     public void Cancel(Ticket ticket)

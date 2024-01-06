@@ -1,0 +1,40 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Ticket Info";
+    var ticket = (Presentation.ViewModels.AdminTicketVM)ViewData["Ticket"];
+}
+
+<div class="mb-3">
+    <label for="ID" class="form-label">ID</label>
+    <input id="ID" class="form-control" value="@ticket.ID" disabled>
+</div>
+<div class="mb-3">
+    <label for="Flight" class="form-label">Route</label>
+    <input id="Flight" class="form-control" value="@ticket.Route" disabled>
+</div>
+<div class="mb-3">
+    <label for="Row" class="form-label">Row</label>
+    <input id="Row" class="form-control" value="@ticket.Row" disabled>
+</div>
+<div class="mb-3">
+    <label for="Column" class="form-label">Column</label>
+    <input id="Column" class="form-control" value="@ticket.Column" disabled>
+</div>
+<div class="mb-3">
+    <label for="Passport" class="form-label">Flight Date</label>
+    <input id="Passport" class="form-control" value="@ticket.Dates" disabled>
+</div>
+<div class="mb-3">
+    <label for="Passport" class="form-label">Passport Number</label>
+    <input id="Passport" class="form-control" value="@ticket.PassportNo" disabled>
+</div>
+<div class="mb-3">
+    <label for="PricePaid" class="form-label">Price Paid</label>
+    <input id="PricePaid" class="form-control" value="@ticket.PricePaid" disabled>
+</div>
+<div>
+    <label for="PassportImagePath" class="form-label">Uploaded Passport Photo</label>
+    <div>
+        <img id="PassportImagePath" src="@ticket.PassportImagePath"/>
+    </div>
+</div>

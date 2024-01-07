@@ -81,5 +81,20 @@ public class TicketFileRepository : ITicketRepository
 
     public void Cancel(Ticket ticket)
     {
+        var currentTickets = this.GetTickets()?.ToList();
+        if (currentTickets == null)
+        {
+            throw new Exception("No tickets to cancel");
+        }
+
+        int ticketToModifyIndex = currentTickets.FindIndex(t => t.ID == ticket.ID);
+        if (ticketToModifyIndex == -1)
+        {
+            throw new Exception("Trying to cancel a non-existant ticket");
+        }
+
+        currentTickets[ticketToModifyIndex].Cancelled = true;
+        var json = JsonSerializer.Serialize(currentTickets);
+        System.IO.File.WriteAllText(this.jsonFilePath, json);
     }
 }

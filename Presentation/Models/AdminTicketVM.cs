@@ -19,8 +19,7 @@ public class AdminTicketVM
         }
     }
     public int Row
-    {
-        get => this._ticket.Row;
+    {get => this._ticket.Row;
     }
     public int Column
     {
@@ -43,9 +42,17 @@ public class AdminTicketVM
     {
         get => this._ticket.Passport;
     }
+    public bool HasImage
+    {
+        get => this._ticket.PassportImagePath != null && this._ticket.PassportImagePath != "";
+    }
     public string PassportImagePath
     {
         get => $"/{this._ticket.PassportImagePath}";
+    }
+    public bool Cancelled
+    {
+        get => this._ticket.Cancelled;
     }
 
     public AdminTicketVM(Ticket ticket)

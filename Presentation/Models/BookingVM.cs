@@ -13,6 +13,7 @@ public class BookingVM
     public int? Row { get; set; }
 
     [Required(ErrorMessage = "You must select a column")]
+    [Presentation.Validators.ColumnValidator()]
     public int? Column { get; set; }
 
     [Required(ErrorMessage = "You must enter your passport number")]

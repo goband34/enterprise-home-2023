@@ -10,17 +10,32 @@
             <th scope="col">Route</th>
             <th scope="col">Flight Date</th>
             <th scope="col">Price Paid</th>
+            <th scope="col"></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var ticket in (IEnumerable<Presentation.ViewModels.AdminTicketVM>)ViewData["Tickets"])
         {
-            <tr onclick="openTicketInfoPageForTicket(@ticket.ID)">
-                <td>@ticket.ID</td>
-                <td>@ticket.Route</td>
-                <td>@ticket.Dates</td>
-                <td>@ticket.PricePaid</td>
-            </tr>
+            if(ticket.Cancelled)
+            {
+                <tr class="grey" onclick="openTicketInfoPageForTicket(@ticket.ID)">
+                    <td>@ticket.ID</td>
+                    <td>@ticket.Route</td>
+                    <td>@ticket.Dates</td>
+                    <td>@ticket.PricePaid</td>
+                    <td>CANCELLED</td>
+                </tr>
+            }
+            else
+            {
+                <tr onclick="openTicketInfoPageForTicket(@ticket.ID)">
+                    <td>@ticket.ID</td>
+                    <td>@ticket.Route</td>
+                    <td>@ticket.Dates</td>
+                    <td>@ticket.PricePaid</td>
+                    <td></td>
+                </tr>
+            }
         }
     </tbody>
 </table>
@@ -29,6 +44,11 @@
 <style>
 tr {
     cursor: pointer;
+}
+
+tr.grey
+{
+    background-color: #e3e3e3;
 }
 </style>        
 }

@@ -31,12 +31,13 @@ public class TicketDBRepository : ITicketRepository
             throw new Exception("Trying to book a flight that was in the past");
         }
 
-        var existingTicket =
+        var c =
             this._context.Tickets
-            ?.Where(t => t.FlightFK == ticket.FlightFK && t.Row == ticket.Row && t.Column == ticket.Column && !ticket.Cancelled)
-            .FirstOrDefault();
+            ?.Where(t => t.FlightFK == ticket.FlightFK && t.Row == ticket.Row && t.Column == ticket.Column && !t.Cancelled)
+            .Count();
+        bool isBooked = (c ?? 0) > 0;
 
-        if (existingTicket != null)
+        if (isBooked)
         {
             throw new Exception("Trying to book a ticket that's occupied");
         }
@@ -47,6 +48,7 @@ public class TicketDBRepository : ITicketRepository
 
     public void Cancel(Ticket ticket)
     {
+        ticket.Cancelled = true;
+        this._context.SaveChanges();
     }
-
 }

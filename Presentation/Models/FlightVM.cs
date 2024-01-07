@@ -28,7 +28,7 @@ public class FlightVM
     }
     public bool IsFull
     {
-        get => this._flight.Tickets.Count >= (this._flight.Rows * this._flight.Columns);
+        get => this._flight.Tickets.Where(t => !t.Cancelled).Count() >= (this._flight.Rows * this._flight.Columns);
     }
     public int NumberOfBookings
     {

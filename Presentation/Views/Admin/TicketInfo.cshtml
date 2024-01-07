@@ -4,6 +4,11 @@
     var ticket = (Presentation.ViewModels.AdminTicketVM)ViewData["Ticket"];
 }
 
+@if(ticket.Cancelled)
+{
+    <h2 style="color: red">Cancelled</h2>
+}
+
 <div class="mb-3">
     <label for="ID" class="form-label">ID</label>
     <input id="ID" class="form-control" value="@ticket.ID" disabled>
@@ -32,9 +37,12 @@
     <label for="PricePaid" class="form-label">Price Paid</label>
     <input id="PricePaid" class="form-control" value="@ticket.PricePaid" disabled>
 </div>
+@if(@ticket.HasImage)
+{
 <div>
     <label for="PassportImagePath" class="form-label">Uploaded Passport Photo</label>
     <div>
         <img id="PassportImagePath" src="@ticket.PassportImagePath"/>
     </div>
 </div>
+}

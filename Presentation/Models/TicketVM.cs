@@ -6,6 +6,10 @@ public class TicketVM
 {
     private Ticket _ticket;
 
+    public int ID
+    {
+        get => this._ticket.ID;
+    }
     public string Title
     {
         get

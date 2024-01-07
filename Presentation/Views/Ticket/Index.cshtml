@@ -13,6 +13,7 @@
                 <h5 class="card-title">@ticket.Title</h5>
                 <p class="card-text">@ticket.Description</p>
                 <p class="card-text">@(ticket.PricePaid)&euro;</p>
+                <a href="@Url.Action("CancelTicket", new { id = ticket.ID })" class="btn btn-danger">Cancel</a>
             </div>
         </div>
     }

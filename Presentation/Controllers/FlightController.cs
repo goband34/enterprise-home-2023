@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using Domain.Models;
 using Data.Repositories;
 using Presentation.ViewModels;
 
@@ -8,11 +10,13 @@ public class FlightController : Controller
 {
     private FlightDbRepository _flightRepo;
     private ITicketRepository _ticketRepo;
+    private UserManager<User> _userManager;
 
-    public FlightController(FlightDbRepository flightRepository, ITicketRepository ticketRepository)
+    public FlightController(FlightDbRepository flightRepository, ITicketRepository ticketRepository, UserManager<User> userManager)
     {
         this._flightRepo = flightRepository;
         this._ticketRepo = ticketRepository;
+        this._userManager = userManager;
     }
 
     [HttpGet]
@@ -33,11 +37,14 @@ public class FlightController : Controller
         var flight = this._flightRepo.GetFlight(id);
         if (flight != null)
         {
+            var user = this._userManager.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
             var flightVM = new FlightVM(flight);
             ViewData["FlightID"] = flightVM.ID;
             ViewData["FlightTitle"] = flightVM.FlightRoute;
             ViewData["FlightRows"] = flightVM.Rows;
             ViewData["FlightColumns"] = flightVM.Columns;
+            ViewData["BookedSeats"] = flight.Tickets.Where(t => !t.Cancelled).Select(t => (t.Row,t.Column));
+            ViewData["UserPassport"] = user?.PassportNumber;
             return View();
         }
         // TODO: Better error handling

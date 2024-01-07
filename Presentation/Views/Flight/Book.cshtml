@@ -3,6 +3,8 @@
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Book a Flight";
+    var rows = (int?)ViewData["FlightRows"] ?? 0;
+    var columns = (int?)ViewData["FlightColumns"] ?? 0;
 }
 
 <h1 class="display-4">Book a ticket for @ViewData["FlightTitle"]</h1>
@@ -10,26 +12,130 @@
 <form asp-action="Book" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input type="hidden" asp-for="FlightID" value="@ViewData["FlightID"]">
-    <div class="mb-3">
-        <label class="form-label" asp-for="Row">Row (1 to @ViewData["FlightRows"])</label>
-        <input class="form-control" type="text" asp-for="Row">
-        <span asp-validation-for="Row" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label class="form-label" asp-for="Column">Column (1 of @ViewData["FlightColumns"])</label>
-        <input class="form-control" type="text" asp-for="Column">
-        <span asp-validation-for="Column" class="text-danger"></span>
-    </div>
+    @if(!User.Identity.IsAuthenticated)
+    {
     <div class="mb-3">
         <label class="form-label" asp-for="PassportNo">Passport No</label>
         <input class="form-control" type="text" asp-for="PassportNo">
         <span asp-validation-for="PassportNo" class="text-danger"></span>
     </div>
+    }
+    else
+    {
+    <div class="mb-3">
+        <label class="form-label" >Passport No</label>
+        <input class="form-control" type="text" value="@ViewData["UserPassport"]" disabled>
+    </div>
+    }
     <div class="mb-3">
         <label class="form-label" asp-for="PassportImage">Passport Image</label>
         <input class="form-control" type="file" asp-for="PassportImage">
         <span asp-validation-for="PassportImage" class="text-danger"></span>
     </div>
 
+    <div class="mb-3">
+        <input type="hidden" asp-for="Row">
+        <input type="hidden" asp-for="Column">
+        <label for="seat_choice">Choose a seat</label>
+        <div id="seat_choice">
+        </div>
+        <span asp-validation-for="Row" class="text-danger"></span>
+        <span asp-validation-for="Column" class="text-danger"></span>
+    </div>
+    
     <button type="submit" class="btn btn-primary">Book</button>
 </form>
+
+@section Scripts {
+<script>
+    const rows = @rows;
+    const columns = @columns;
+    const bookedSeats = new Set();
+    @foreach (var bookedSeat in (IEnumerable<(int, int)>)ViewData["BookedSeats"])
+    {
+        @:bookedSeats.add(@Json.Serialize($"{bookedSeat.Item1},{bookedSeat.Item2}"));
+    }
+
+    const seatChoiceElement = document.getElementById('seat_choice');
+    const rowSeatChoiceInput = document.getElementById('Row');
+    const columnSeatChoiceInput = document.getElementById('Column');
+
+    function isBooked(row, column) {
+        return bookedSeats.has(`${row},${column}`);
+    }
+    
+    function generateSeatChoices(seatEl, rowSeatInput, columnSeatInput, rows, columns) {
+        if(rows !== 0 && columns !== 0) {
+            const t = document.createElement('template');
+            seatEl.style.display = 'grid';
+            seatEl.style.justifyContent = 'start';
+            seatEl.style.gridTemplateRows = '50px '.repeat(rows-1) + '50px';
+            seatEl.style.gridTemplateColumns = '50px '.repeat(columns-1) + '50px ';
+            seatEl.style.gridRowGap = '3px';
+            seatEl.style.gridColumnGap = '3px';
+
+            for(let row = 1; row <= rows ; row++) {
+                for(let column = 1; column <= columns; column++) {
+                    t.innerHTML = `<div class="seat-choice-option"><span>${String.fromCharCode(65 + row - 1)}${column}</span></div>`;
+                    seatEl.appendChild(t.content);
+                    if(!isBooked(row,column)) {
+                        seatEl.lastChild.addEventListener('click', e => {
+                            const el = e.target.closest('div');
+
+                            for(const child of seatEl.children) {
+                                child.classList.remove('active');
+                            }
+
+                            el.classList.add('active');
+                            rowSeatInput.value = row;
+                            columnSeatInput.value = column;
+                        });
+                    }
+                    else {
+                        seatEl.lastChild.classList.add('disabled');
+                    }
+                }
+            }
+        }
+    }
+
+    generateSeatChoices(seatChoiceElement, rowSeatChoiceInput, columnSeatChoiceInput, rows, columns);
+    const x = columnSeatChoiceInput.value;
+    const y = rowSeatChoiceInput.value;
+    if(x !== "" && x !== null && y !== "" && y !== null) {
+        seatChoiceElement.children[x*y-1].classList.add('active');
+    }
+</script>
+}
+
+@section Styles {
+<style>
+.seat-choice-option {
+    background-color: red;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.seat-choice-option>span {
+    user-select: none;
+}
+
+.seat-choice-option:not(.disabled) {
+    cursor: pointer;
+}
+
+.seat-choice-option.active {
+    background-color: #bd0000;
+}
+    
+.seat-choice-option.disabled {
+    background-color: #c7c7c7;
+}
+
+.seat-choice-option:not(.disabled):hover {
+    background-color: #bd0000;
+}
+</style>
+}

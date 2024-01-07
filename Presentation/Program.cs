@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Data.Contexts;
 using Data.Repositories;
 using Domain.Models;
@@ -17,6 +18,7 @@ public class Program
 
         builder.Services
             .AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+            .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<AirlineDbContext>();
         builder.Services.AddRazorPages();
         builder.Services.AddDbContext<AirlineDbContext>(options =>
